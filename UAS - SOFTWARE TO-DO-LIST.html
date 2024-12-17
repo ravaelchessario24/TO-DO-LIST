@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title>✅ To-Do List Sederhana</title>
 
     <style>
@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 5px;
         }
 
         .container {
@@ -28,8 +29,10 @@
 
         input[type="text"] {
             padding: 15px;
-            width: 80%;
             font-size: 18px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
         }
 
         button {
@@ -65,11 +68,22 @@
             background: transparent;
             border: none;
             color: #ff5722;
-            cursor: pointer;
             font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            input[type="text"], button {
+                padding: 10px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -84,24 +98,18 @@
     </div>
 
     <script>
-        // Load semua tugas dari Local Storage saat halaman dimuat
-        function loadTasks() {
-            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-            tasks.forEach(taskText => {
+        // Fungsi untuk menambah tugas
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskText = input.value.trim();
+
+            if (taskText) {
                 createTask(taskText);
-            });
+                input.value = '';
+                saveTasks();
+            }
         }
 
-        // Simpan semua tugas ke Local Storage
-        function saveTasks() {
-            const tasks = [];
-            document.querySelectorAll('.task span').forEach(taskSpan => {
-                tasks.push(taskSpan.innerText);
-            });
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
-        // Buat elemen tugas di daftar
         function createTask(taskText) {
             const taskList = document.getElementById('taskList');
             const taskItem = document.createElement('div');
@@ -113,26 +121,28 @@
             taskList.appendChild(taskItem);
         }
 
-        // Fungsi untuk menambah tugas
-        async function addTask() {
-            const input = document.getElementById('taskInput');
-            const taskText = input.value.trim();
-
-            if (taskText) {
-                createTask(taskText);
-                input.value = '';
-                saveTasks();
-            }
-        }
-
-        // Fungsi untuk menghapus tugas
+        // Menghapus tugas
         function deleteTask(button) {
             const taskItem = button.parentElement;
             taskItem.remove();
             saveTasks();
         }
 
-        // Load semua tugas saat halaman pertama kali dibuka
+        // Load tugas dari Local Storage
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.forEach(taskText => createTask(taskText));
+        }
+
+        // Simpan tugas ke Local Storage
+        function saveTasks() {
+            const tasks = [];
+            document.querySelectorAll('.task span').forEach(taskSpan => {
+                tasks.push(taskSpan.innerText);
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
         window.onload = loadTasks;
     </script>
 
